@@ -21,7 +21,7 @@ MonoBehaviour:
   m_ShowMode: 4
   m_Title: 
   m_RootView: {fileID: 7}
-  m_MinSize: {x: 875, y: 542}
+  m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
   m_Maximized: 1
 --- !u!114 &2
@@ -74,7 +74,7 @@ MonoBehaviour:
   m_MinSize: {x: 881, y: 492}
   m_MaxSize: {x: 16006, y: 14042}
   vertical: 0
-  controlID: 5133
+  controlID: 52
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -177,7 +177,7 @@ MonoBehaviour:
     y: 0
     width: 1920
     height: 997
-  m_MinSize: {x: 875, y: 542}
+  m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &8
 MonoBehaviour:
@@ -246,7 +246,7 @@ MonoBehaviour:
   m_MinSize: {x: 605, y: 492}
   m_MaxSize: {x: 12005, y: 14042}
   vertical: 1
-  controlID: 5134
+  controlID: 53
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -272,7 +272,7 @@ MonoBehaviour:
   m_MinSize: {x: 605, y: 221}
   m_MaxSize: {x: 12005, y: 4021}
   vertical: 0
-  controlID: 5135
+  controlID: 54
 --- !u!114 &12
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -391,20 +391,20 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/URP
+    - Assets/Graphics/Materials
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/URP
+  - Assets/Graphics/Materials
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\git\TangledTogether\TangledTogether
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: ea490000
-    m_LastClickedID: 18922
-    m_ExpandedIDs: 00000000704300008449000086490000884900008a4900008c490000e0490000e649000000ca9a3b
+    scrollPos: {x: 0, y: 39}
+    m_SelectedIDs: e44b0000
+    m_LastClickedID: 19428
+    m_ExpandedIDs: 0000000070430000a24b0000a44b0000a64b0000a84b0000aa4b000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -432,7 +432,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000704300008449000086490000884900008a4900008c490000
+    m_ExpandedIDs: 0000000070430000a24b0000a44b0000a64b0000a84b0000aa4b0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -554,10 +554,10 @@ MonoBehaviour:
   m_ViewDataDictionary: {fileID: 0}
   m_SceneHierarchy:
     m_TreeViewState:
-      scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: d02cffff
-      m_LastClickedID: -54064
-      m_ExpandedIDs: 0c42ffffca75ffff8ef9ffffc0f9ffff12faffff26faffff8cfaffffacfaffff08fbffff664500007c450000aa450000e24500000a4600002446000048460000aa46000030470000344700006e4700007c4700009a470000
+      scrollPos: {x: 0, y: 445}
+      m_SelectedIDs: 98b2ffff
+      m_LastClickedID: -19816
+      m_ExpandedIDs: ccb4ffff38c2ffff6ad2ffff08fbffff7866000002670000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -617,9 +617,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -2.2514358, y: 4.8554063, z: 1.463869}
+    m_Target: {x: 7.8879223, y: 17.231947, z: 11.099951}
     speed: 2
-    m_Value: {x: -2.2514358, y: 4.8554063, z: 1.463869}
+    m_Value: {x: 7.8879223, y: 17.231947, z: 11.099951}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -665,13 +665,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.26047733, y: -0.37748066, z: 0.10996979, w: 0.8823607}
+    m_Target: {x: -0.03243851, y: -0.9458746, z: 0.30971232, w: -0.0969855}
     speed: 2
-    m_Value: {x: 0.2605126, y: -0.37596992, z: 0.10952455, w: 0.88248754}
+    m_Value: {x: -0.031956993, y: -0.94551855, z: 0.30959678, w: -0.095516026}
   m_Size:
     m_Target: 5.240433
     speed: 2
-    m_Value: 5.5404334
+    m_Value: 5.240433
   m_Ortho:
     m_Target: 0
     speed: 2
