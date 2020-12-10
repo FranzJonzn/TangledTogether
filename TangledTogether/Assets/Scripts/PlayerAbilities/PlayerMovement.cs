@@ -63,9 +63,11 @@ public class PlayerMovement : MonoBehaviour
 
 	void Move()
 	{
-		if (direction.magnitude > 0.1f && isGrounded && !playerInput.disableMovement)
+		if (direction.magnitude > 0.1f && isGrounded)
 		{
-			Rotate(direction);
+			if(!playerInput.disableRotation)
+				Rotate(direction);
+			if(!playerInput.disableMovement)
 			rb.AddForce(direction * movementSpeed * Time.deltaTime, ForceMode.VelocityChange);
 		}
 		Debug.DrawLine(transform.position, transform.position + direction, Color.yellow);

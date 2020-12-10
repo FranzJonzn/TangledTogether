@@ -6,7 +6,6 @@ public class Grab : MonoBehaviour
 {
     private PlayerInput playerInput;
     public float grabRange;
-	public float viewRadius = 1.1f;
 	[Range(0, 360)]
 	public float viewAngle = 150;
 
@@ -79,10 +78,13 @@ public class Grab : MonoBehaviour
 					fixedJoint = closestObject.AddComponent(typeof(FixedJoint)) as FixedJoint;
 					fixedJoint.connectedBody = rb;
 					if (closestObject.GetComponent<Rigidbody>().isKinematic)
-						playerInput.disableMovement = true;
+					{
+						//playerInput.disableMovement = true;
+						//playerInput.disableRotation = true;
+					}
+					Debug.Log(closestObject.name);
 					grabbedObject = true;
 					playerInput.isGrabbing = true;
-					Debug.Log("grabbing");
 					SpecialCases();
 				}
 			}
@@ -105,7 +107,10 @@ public class Grab : MonoBehaviour
 	void Release()
 	{
 		if (closestObject != null && closestObject.GetComponent<Rigidbody>().isKinematic)
-			playerInput.disableMovement = false;
+		{
+			//playerInput.disableMovement = false;
+			//playerInput.disableRotation = false;
+		}
 		Destroy(fixedJoint);
 		grabbedObject = false;
 		playerInput.isGrabbing = false;

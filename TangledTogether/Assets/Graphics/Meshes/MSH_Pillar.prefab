@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 1869676131395692077}
   - component: {fileID: 6447469401410686748}
   - component: {fileID: 3045046897694938947}
-  - component: {fileID: 3200476735203666460}
   m_Layer: 0
   m_Name: MSH_Pillar
   m_TagString: Untagged
@@ -111,18 +110,3 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.8397846, y: 3.624166, z: 0.79037607}
   m_Center: {x: -7.6630373, y: 1.7806661, z: 1.845706}
---- !u!114 &3200476735203666460
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9130721183547975880}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b23b04ee103b11d428388f80f9f1c0da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  offsetPos: {x: 0, y: 0, z: 0}
-  speed: 0
-  move: 0

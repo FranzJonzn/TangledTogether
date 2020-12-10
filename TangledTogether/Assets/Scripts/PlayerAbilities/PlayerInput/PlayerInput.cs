@@ -14,6 +14,7 @@ public class PlayerInput : ScriptableObject
 	public KeyCode yeet = KeyCode.F;
 
 	public bool disableMovement = false;
+	public bool disableRotation = false;
 	public bool disableThrow = false;
 	public bool isGrabbing = true;
 }

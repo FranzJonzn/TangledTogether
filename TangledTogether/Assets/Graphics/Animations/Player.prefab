@@ -91,7 +91,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6319a0544f705af4c809f8cc1a95d1d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grabRange: 2
+  grabRange: 2.5
+  viewRadius: 1.1
+  viewAngle: 150
 --- !u!114 &-4493101242051009525
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -104,7 +106,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5490300071dbd8443a7fdc01b018c13b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  otherPlayer: {fileID: 0}
   viewRadius: 1
   viewAngle: 150
   targetMask:
@@ -113,7 +114,10 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 0
-  visibleTargets: []
+  h: 25
+  gravity: -18
+  angle: 1
+  throwForce: 0
 --- !u!114 &8120851198731948413
 MonoBehaviour:
   m_ObjectHideFlags: 0
