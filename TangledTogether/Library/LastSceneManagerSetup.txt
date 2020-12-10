@@ -1,9 +1,5 @@
 sceneSetups:
-<<<<<<< HEAD
 - path: Assets/Scenes/Main.unity
-=======
-- path: Assets/Scenes/Platforming_Level.unity
->>>>>>> main
   isLoaded: 1
   isActive: 1
   isSubScene: 0
