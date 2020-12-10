@@ -6,6 +6,11 @@ public class GameManager : MonoBehaviour
 {
     private GameObject[] players;
 
+    private void Awake()
+    {
+        Debug.Log(System.DateTime.Now);
+    }
+
     void OnApplicationQuit()
     {
         players = GameObject.FindGameObjectsWithTag("Player");
