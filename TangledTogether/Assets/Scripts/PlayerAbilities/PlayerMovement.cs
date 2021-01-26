@@ -45,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
 		Move();
 		ReverseMoveForce();
 		Jump();
+		Swing();
 	}
 
 	void MoveInput()
@@ -76,7 +77,7 @@ public class PlayerMovement : MonoBehaviour
 	void ReverseMoveForce()
 	{
 		//Stop movement when no key is pressed
-		if (direction.magnitude <= 0.1f)
+		if (direction.magnitude <= 0.1f && isGrounded)
 		{
 			if (rb.velocity.x > 0.1f || rb.velocity.x < -0.1f)
 				rb.AddForce(Vector3.left * stopSpeed * rb.velocity.x * Time.deltaTime, ForceMode.VelocityChange);
@@ -146,4 +147,16 @@ public class PlayerMovement : MonoBehaviour
 		transform.rotation = Quaternion.Euler(0f, angle, 0f);
 		//rb.AddTorque(new Vector3(0f, angle, 0f), ForceMode.VelocityChange);
 	}
+
+	// TODO: avgöra när man hänger i repet till skillnad från att vara i luften för att man hoppar tex
+	void Swing()
+    {
+		if (direction.magnitude > 0.1f && !isGrounded)
+		{
+			if (!playerInput.disableRotation)
+				Rotate(direction);
+			if (!playerInput.disableMovement)
+				rb.AddForce(direction * movementSpeed * Time.deltaTime, ForceMode.Impulse);
+		}
+    }
 }
