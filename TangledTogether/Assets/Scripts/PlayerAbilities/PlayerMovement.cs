@@ -28,10 +28,12 @@ public class PlayerMovement : MonoBehaviour
 	private float turnSmoothVelocity;
 	private float slopeAngle;
     private bool isGrounded;
+	private float originalMass;
 
 	private void Awake()
 	{
 		playerInput = gameObject.GetComponent<PlayerInputHolder>().playerInput;
+		originalMass = rb.mass;
 	}
 
 	private void Update()
@@ -46,6 +48,7 @@ public class PlayerMovement : MonoBehaviour
 		ReverseMoveForce();
 		Jump();
 		Swing();
+		Anchor();
 	}
 
 	void MoveInput()
@@ -117,6 +120,19 @@ public class PlayerMovement : MonoBehaviour
 		else if(!isGrounded)
 		{
 			rb.AddForce(gravity * Vector3.up);
+		}
+	}
+
+	void Anchor()
+	{
+		if (isGrounded && Input.GetKeyDown(playerInput.anchor) && !playerInput.disableMovement)
+		{
+			Debug.Log("ANCHOR");
+			rb.mass *= 1000;
+		}
+		else if (isGrounded && Input.GetKeyUp(playerInput.anchor) && !playerInput.disableMovement)
+		{
+			rb.mass = originalMass;
 		}
 	}
 
