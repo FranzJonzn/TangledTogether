@@ -19,3 +19,8 @@ MonoBehaviour:
   jump: 256
   grab: 261
   yeet: 260
+  anchor: 259
+  disableMovement: 0
+  disableRotation: 0
+  disableThrow: 0
+  isGrabbing: 1

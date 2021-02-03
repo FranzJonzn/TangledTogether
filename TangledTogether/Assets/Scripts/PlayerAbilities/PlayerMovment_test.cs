@@ -12,8 +12,6 @@ public class PlayerMovment_test : MonoBehaviour
     private bool         player_1_jump;
     private bool         player_1_jumped;
     private float        player_1_startMass;
-    private Camera       player_1_camera;
-
     [Space]
     public Rigidbody     player_2;
     private PlayerInput  player_2_Input;
@@ -23,7 +21,6 @@ public class PlayerMovment_test : MonoBehaviour
     private bool         player_2_jump;
     private bool         player_2_jumped;
     private float        player_2_startMass;
-    private Camera       player_2_camera;
     [Space]
     [Space]
     public LayerMask groundMask;
@@ -32,7 +29,12 @@ public class PlayerMovment_test : MonoBehaviour
     [Space]
     public float maxSpeed       = 7f;
     public float friction       = 15f;
+    [Space]
+    [Space]
     public Vector3 jumpVelocity = new Vector3(0f, 1f, 0f);
+    [Space]
+    [Space]
+    public float swingPushVelocity = 2.5f;
     [Space]
     [Space]
     public float anchorWeight = 100f;
@@ -42,10 +44,7 @@ public class PlayerMovment_test : MonoBehaviour
     public  float turnSmoothTime = 0.1f;
     private float turnSmoothVelocity;
 
-    [Space]
-    [Space]
-    public bool fps = false;
-    public Camera camera3D;
+    public float maxDistanBetweenPlayers = 15f;
     
     void Start()
     {
@@ -55,101 +54,88 @@ public class PlayerMovment_test : MonoBehaviour
         player_2_startMass = player_2.mass;
         player_1_startMass = player_1.mass;
 
-        player_2_camera = player_2.gameObject.GetComponentInChildren<Camera>();
-        player_1_camera = player_1.gameObject.GetComponentInChildren<Camera>();
 
     }
 
 
+    bool player_1_sand_ground;
+    bool player_2_sand_ground;
     void Update()
     {
 
+         player_1_sand_ground = Input.GetKey(player_1_Input.anchor);
+         player_2_sand_ground = Input.GetKey(player_2_Input.anchor);
+
         player_1.mass = (player_1_isGrounded)                 ? player_1_startMass : aireWeight;
-        player_1.mass = (Input.GetKey(player_1_Input.anchor)) ? anchorWeight       : player_1.mass;
+        player_1.mass = (player_1_sand_ground)                ? anchorWeight       : player_1.mass;
       
 
         player_2.mass = (player_2_isGrounded)                 ? player_2_startMass : aireWeight;
-        player_2.mass = (Input.GetKey(player_2_Input.anchor)) ? anchorWeight       : player_2.mass;
+        player_2.mass = (player_2_sand_ground)                ? anchorWeight       : player_2.mass;
 
 
-        if (fps)
+        if (!player_2_sand_ground)
         {
-            camera3D.gameObject.SetActive(false);
-            player_2_camera.gameObject.SetActive(true);
-            player_1_camera.gameObject.SetActive(true);
-            MoveInputFPS(player_2_Input, ref player_2_direction, ref player_2_jump, player_2_camera);
-            MoveInputFPS(player_1_Input, ref player_1_direction, ref player_1_jump, player_1_camera);
+            MoveInput(player_2_Input, ref player_2_direction, ref player_2_jump, player_2_isGrounded);
+            GroundCheck(out player_2_isGrounded, ref player_2_direction, player_2_groundCheck);
         }
-        else
+        if (!player_1_sand_ground)
         {
-            camera3D.gameObject.SetActive(true);
-            player_2_camera.gameObject.SetActive(false);
-            player_1_camera.gameObject.SetActive(false);
-            MoveInput(player_2_Input, ref player_2_direction, ref player_2_jump);
-            MoveInput(player_1_Input, ref player_1_direction, ref player_1_jump);
+            MoveInput(player_1_Input, ref player_1_direction, ref player_1_jump, player_1_isGrounded);
+            GroundCheck(out player_1_isGrounded, ref player_1_direction, player_1_groundCheck);
         }
-
-
-
-
-        GroundCheck(out player_2_isGrounded, ref player_2_direction, player_2_groundCheck);
-        GroundCheck(out player_1_isGrounded, ref player_1_direction, player_1_groundCheck);
     }
 
 
     private void FixedUpdate()
     {
-        Move(player_2, player_2_direction, player_2_isGrounded, player_2_jump, ref player_2_jumped);
-        Move(player_1, player_1_direction, player_1_isGrounded, player_1_jump, ref player_1_jumped);
-        //Jump(ref player_2_jump, player_2_isGrounded, player_2_Input, jumpVelocity, player_2);
-        //Jump(ref player_1_jump, player_1_isGrounded, player_1_Input, jumpVelocity,player_1);
+        if (!player_2_sand_ground)
+            Move(player_2, player_2_direction, player_2_isGrounded, player_2_jump, ref player_2_jumped);
+        if (!player_1_sand_ground)
+            Move(player_1, player_1_direction, player_1_isGrounded, player_1_jump, ref player_1_jumped);
 
 
     }
     private float slopeAngle;
 
-    void MoveInput(PlayerInput playerInput, ref Vector3 direction, ref bool jump)
+    void MoveInput(PlayerInput playerInput, ref Vector3 direction, ref bool jump, bool isGrounded)
     {
+
         direction = Vector3.zero;
-        if (Input.GetKey(playerInput.left))
-            direction += Vector3.left;
-        if (Input.GetKey(playerInput.right))
-            direction += Vector3.right;
-        if (Input.GetKey(playerInput.up))
-            direction += Vector3.forward;
-        if (Input.GetKey(playerInput.down))
-            direction += Vector3.back;
+        if (isGrounded)
+        {
+            if (Input.GetKey(playerInput.left))
+                direction += Vector3.left;
+            if (Input.GetKey(playerInput.right))
+                direction += Vector3.right;
+            if (Input.GetKey(playerInput.up))
+                direction += Vector3.forward;
+            if (Input.GetKey(playerInput.down))
+                direction += Vector3.back;
+
+
+        }
+        else
+        {
+            if (Input.GetKeyDown(playerInput.left))
+                direction += Vector3.left;
+            if (Input.GetKeyDown(playerInput.right))
+                direction += Vector3.right;
+            if (Input.GetKeyDown(playerInput.up))
+                direction += Vector3.forward;
+            if (Input.GetKeyDown(playerInput.down))
+                direction += Vector3.back;
+        }
+
+
 
         direction.Normalize();
-
-
-       
-            jump = Input.GetKeyDown(playerInput.jump);
+        jump = Input.GetKeyDown(playerInput.jump);
         
     
 
     }
-    void MoveInputFPS(PlayerInput playerInput, ref Vector3 direction, ref bool jump, Camera camera)
-    {
-        direction = Vector3.zero;
-        if (Input.GetKey(playerInput.left))
-            direction += -camera.transform.right;// Vector3.left;
-        if (Input.GetKey(playerInput.right))
-            direction += camera.transform.right;// Vector3.right;
-        if (Input.GetKey(playerInput.up))
-            direction += camera.transform.forward;// Vector3.forward;
-        if (Input.GetKey(playerInput.down))
-            direction += -camera.transform.forward;// Vector3.back;
 
-        direction.Normalize();
-
-
-
-        jump = Input.GetKeyDown(playerInput.jump);
-
-
-
-    }
 
 
     void GroundCheck(out bool isGrounded, ref Vector3 direction, Transform groundCheck)
@@ -182,47 +168,47 @@ public class PlayerMovment_test : MonoBehaviour
     {
         Vector3 vel = rb.velocity;
 
-        if (direction.magnitude > 0.1f && isGrounded)
+        if (isGrounded)
         {
-            if(!fps)
+            if (direction.magnitude > 0.1f)
+            {
+
                 Rotate(direction, rb);
 
-            float acceleration = maxSpeed * friction;
-            vel.x -= friction     * Time.deltaTime * vel.x;
-            vel.x += acceleration * Time.deltaTime * direction.x;
-            vel.y -= friction     * Time.deltaTime * vel.y;
-            vel.y += acceleration * Time.deltaTime * direction.y;
-            vel.z -= friction     * Time.deltaTime * vel.z;
-            vel.z += acceleration * Time.deltaTime * direction.z;
-        }
+                float acceleration = maxSpeed * friction;
+                vel.x -= friction * Time.deltaTime * vel.x;
+                vel.x += acceleration * Time.deltaTime * direction.x;
+                vel.y -= friction * Time.deltaTime * vel.y;
+                vel.y += acceleration * Time.deltaTime * direction.y;
+                vel.z -= friction * Time.deltaTime * vel.z;
+                vel.z += acceleration * Time.deltaTime * direction.z;
+            }
 
-        if (!jumped && jump)
+            if (!jumped && jump)
+            {
+                vel += jumpVelocity;
+                jumped = true;
+            }
+            else if (isGrounded)
+                jumped = false;
+        }
+        else
         {
-            vel   += jumpVelocity ;
-            jumped = true;
-        }
-        else if(isGrounded)
-            jumped = false;
+            if (direction.magnitude > 0.1f)
+            {
+                Rotate(direction, rb);
 
+                vel.x += swingPushVelocity * direction.x;
+                vel.y += swingPushVelocity * direction.y;
+                vel.z += swingPushVelocity * direction.z;
+            }
+        }
 
 
         rb.velocity = vel;
 
 
     }
-    //void Jump(ref bool jump, bool isGrounded, PlayerInput playerInput, Vector3 jumpVelocity, Rigidbody player)
-    //{
-
-    //    if (jump)
-    //    {
-    //        jump = isGrounded;
-    //    }
-    //    else if(isGrounded && Input.GetKeyDown(playerInput.jump))
-    //    {
-    //        player.velocity += jumpVelocity;
-    //    }
-     
-    //}
 
 
 
