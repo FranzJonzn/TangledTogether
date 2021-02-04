@@ -36,12 +36,12 @@ public class GrapplingHook : MonoBehaviour
     {
 
         // Create both the rope and the solver:	
-        rope = gameObject.AddComponent<ObiRope>();
-        ropeRenderer = gameObject.AddComponent<ObiRopeExtrudedRenderer>();
-        ropeRenderer.section = section;
-        ropeRenderer.uvScale = new Vector2(1, 5);
-        ropeRenderer.normalizeV = false;
-        ropeRenderer.uvAnchor = 1;
+        rope                                       = gameObject.AddComponent<ObiRope>();
+        ropeRenderer                               = gameObject.AddComponent<ObiRopeExtrudedRenderer>();
+        ropeRenderer.section                       = section;
+        ropeRenderer.uvScale                       = new Vector2(1, 5);
+        ropeRenderer.normalizeV                    = false;
+        ropeRenderer.uvAnchor                      = 1;
         rope.GetComponent<MeshRenderer>().material = material;
 
         // Setup a blueprint for the rope:
