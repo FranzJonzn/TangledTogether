@@ -20,6 +20,8 @@ MonoBehaviour:
   grab: 261
   yeet: 260
   anchor: 259
+  windeInRop: 257
+  windeOutRop: 258
   disableMovement: 0
   disableRotation: 0
   disableThrow: 0

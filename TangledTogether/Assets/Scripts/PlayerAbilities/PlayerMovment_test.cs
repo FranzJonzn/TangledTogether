@@ -4,31 +4,35 @@ using UnityEngine;
 using Obi;
 public class PlayerMovment_test : MonoBehaviour
 {
-    public Rigidbody     player_1;
-    private PlayerInput  player_1_Input;
-    public Transform     player_1_groundCheck;
-    private Vector3      player_1_direction;
-    public bool         player_1_isGrounded;
-    private bool         player_1_jump;
-    private bool         player_1_jumped;
-    public bool         player_1_climing;
-    public bool         player_1_grabRope;
-    private bool         player_1_sand_ground;
-    public int          player_1_ropeIndex;
-    private float        player_1_startMass;
+    public Rigidbody      player_1;
+    private PlayerInput   player_1_Input;
+    public Transform      player_1_groundCheck;
+    private Vector3       player_1_direction;
+    private bool          player_1_isGrounded;
+    private bool          player_1_jump;
+    private bool          player_1_jumped;
+    private bool          player_1_windeRope;
+    private bool          player_1_releseRope;
+    private bool          player_1_ancord;
+    private int           player_1_ropeIndex;
+    private float         player_1_startMass;
+    private ObiRopeCursor player_1_WindeRopeCursor;
+    public  ObiRope       player_1_WindeRope;
     [Space]
-    public Rigidbody     player_2;
-    private PlayerInput  player_2_Input;
-    public Transform     player_2_groundCheck;
-    private Vector3      player_2_direction;
-    private bool         player_2_isGrounded;
-    private bool         player_2_jump;
-    private bool         player_2_jumped;
-    private bool         player_2_climing;
-    private bool         player_2_grabRope;
-    private bool         player_2_sand_ground;
-    private int          player_2_ropeIndex;
-    private float        player_2_startMass;
+    public Rigidbody      player_2;
+    private PlayerInput   player_2_Input;
+    public Transform      player_2_groundCheck;
+    private Vector3       player_2_direction;
+    private bool          player_2_isGrounded;
+    private bool          player_2_jump;
+    private bool          player_2_jumped;
+    private bool          player_2_windeRope;
+    private bool          player_2_releseRope;
+    private bool          player_2_ancord;
+    private int           player_2_ropeIndex;
+    private float         player_2_startMass;
+    private ObiRopeCursor player_2_WindeRopeCursor;
+    public  ObiRope       player_2_WindeRope;
     [Space]
     [Space]
     public LayerMask groundMask;
@@ -56,9 +60,16 @@ public class PlayerMovment_test : MonoBehaviour
     public float maxDistanBetweenPlayers = 15f;
     [Space]
     [Space]
-    public ObiActor rope;
+
+    public ObiRopeCursor climbeCursor;
+    public ObiRope       climbeRope;
+
+
     public float climeSpeed = 2.5f;
-    
+    public float minRestLenght = 1f;
+    public float maxRestLenght = 5.5f;
+
+
     void Start()
     {
         player_1_Input = player_1.gameObject.GetComponent<PlayerInputHolder>().playerInput;
@@ -67,65 +78,55 @@ public class PlayerMovment_test : MonoBehaviour
         player_2_startMass = player_2.mass;
         player_1_startMass = player_1.mass;
 
+        player_2_WindeRopeCursor = player_2_WindeRope.GetComponent<ObiRopeCursor>();
+        player_1_WindeRopeCursor = player_1_WindeRope.GetComponent<ObiRopeCursor>();
 
-    }
+        climbeCursor.ChangeLength(maxRestLenght);
 
+        player_2_WindeRopeCursor.ChangeLength(minRestLenght);
+        player_1_WindeRopeCursor.ChangeLength(minRestLenght);
+
+}
 
     void Update()
     {
 
-        player_1_ropeIndex = getClosesParticle(player_1);
+        ChangeMass();
 
-         player_1_sand_ground = Input.GetKey(player_1_Input.anchor);
-         player_2_sand_ground = Input.GetKey(player_2_Input.anchor);
+        MoveInput(player_2_Input, ref player_2_direction, ref player_2_jump, player_2_isGrounded, ref player_2_windeRope ,ref player_2_releseRope);
+        GroundCheck(out player_2_isGrounded, ref player_2_direction, player_2_groundCheck);
 
-        player_1.mass = (player_1_isGrounded)                 ? player_1_startMass : aireWeight;
-        player_1.mass = (player_1_sand_ground)                ? anchorWeight       : player_1.mass;
-      
+        MoveInput(player_1_Input, ref player_1_direction, ref player_1_jump, player_1_isGrounded, ref player_1_windeRope, ref player_1_releseRope);
+        GroundCheck(out player_1_isGrounded, ref player_1_direction, player_1_groundCheck);
 
-        player_2.mass = (player_2_isGrounded)                 ? player_2_startMass : aireWeight;
-        player_2.mass = (player_2_sand_ground)                ? anchorWeight       : player_2.mass;
-
-
-        if (!player_2_sand_ground)
-        {
-            MoveInput(player_2_Input, ref player_2_direction, ref player_2_jump, player_2_isGrounded, ref player_2_grabRope);
-            GroundCheck(out player_2_isGrounded, ref player_2_direction, player_2_groundCheck);
-        }
-        if (!player_1_sand_ground)
-        {
-            MoveInput(player_1_Input, ref player_1_direction, ref player_1_jump, player_1_isGrounded, ref player_1_grabRope);
-            GroundCheck(out player_1_isGrounded, ref player_1_direction, player_1_groundCheck);
-        }
     }
-
 
     private void FixedUpdate()
     {
-        if (!player_2_sand_ground)
+
             Move(    player_2, 
                      player_2_direction, 
                      player_2_isGrounded, 
                      player_2_jump, 
                  ref player_2_jumped, 
-                     player_2_grabRope,
-                 ref player_2_climing,
+                     player_2_ancord,
+                 ref player_2_windeRope,
                  ref player_2_ropeIndex);
-        if (!player_1_sand_ground)
+
             Move(    player_1, 
                      player_1_direction,
                      player_1_isGrounded, 
                      player_1_jump, 
                  ref player_1_jumped, 
-                     player_1_grabRope, 
-                 ref player_1_climing,
+                     player_1_ancord, 
+                 ref player_1_windeRope,
                  ref player_1_ropeIndex);
 
-
+        windRope(player_1_WindeRope, player_1_WindeRopeCursor, player_1_windeRope, player_1_releseRope);
+        windRope(player_2_WindeRope, player_2_WindeRopeCursor, player_2_windeRope, player_2_releseRope);
     }
-    private float slopeAngle;
 
-    void MoveInput(PlayerInput playerInput, ref Vector3 direction, ref bool jump, bool isGrounded, ref bool dragRope)
+    void MoveInput(PlayerInput playerInput, ref Vector3 direction, ref bool jump, bool isGrounded, ref bool windRope, ref bool releseRope)
     {
 
         direction = Vector3.zero;
@@ -140,7 +141,7 @@ public class PlayerMovment_test : MonoBehaviour
             if (Input.GetKey(playerInput.down))
                 direction += Vector3.back;
 
- 
+
         }
         else
         {
@@ -153,17 +154,50 @@ public class PlayerMovment_test : MonoBehaviour
             if (Input.GetKeyDown(playerInput.down))
                 direction += Vector3.back;
 
-        
+
         }
 
 
 
         direction.Normalize();
-        jump     = Input.GetKeyDown(playerInput.jump);
-        dragRope = Input.GetKey(playerInput.grab);
+        jump       = Input.GetKeyDown(playerInput.jump);
+        windRope   = Input.GetKey(playerInput.windeInRop);
+        releseRope = Input.GetKey(playerInput.windeOutRop);
 
 
 
+    }
+
+
+    private void ChangeMass()
+    {
+
+
+        player_1_ancord = Input.GetKey(player_1_Input.anchor);
+        player_2_ancord = Input.GetKey(player_2_Input.anchor);
+
+        player_1.mass = (player_1_isGrounded) ? player_1_startMass : aireWeight;
+        player_1.mass = (player_1_ancord)     ? anchorWeight       : player_1.mass;
+
+
+        player_2.mass = (player_2_isGrounded) ? player_2_startMass : aireWeight;
+        player_2.mass = (player_2_ancord)     ? anchorWeight       : player_2.mass;
+    }
+
+
+    private void windRope(ObiRope rope, ObiRopeCursor coursor, bool windRope, bool releseRop)
+    {
+        //haling rope
+        if (windRope)
+        {
+            climbeCursor.ChangeLength(Mathf.Clamp(climbeRope.restLength - climeSpeed * Time.deltaTime, minRestLenght, maxRestLenght));
+            coursor.ChangeLength(Mathf.Clamp(rope.restLength + climeSpeed * Time.deltaTime, minRestLenght, maxRestLenght));
+        }
+        if (releseRop)
+        {
+            climbeCursor.ChangeLength(Mathf.Clamp(climbeRope.restLength + climeSpeed * Time.deltaTime, minRestLenght, maxRestLenght));
+            coursor.ChangeLength(Mathf.Clamp(rope.restLength - climeSpeed * Time.deltaTime, minRestLenght, maxRestLenght));
+        }
     }
 
 
@@ -182,52 +216,39 @@ public class PlayerMovment_test : MonoBehaviour
             direction = Vector3.ProjectOnPlane(direction, hit.normal);     
             direction.Normalize();
         }
-        //Debug.DrawLine(groundCheck.position, groundCheck.position + direction * 4f, Color.green);
 
-        if (!isGrounded)
-        {
-            slopeAngle = 90;
-        }
-        else if (hit.normal != Vector3.up)
-        {
-            slopeAngle = Vector3.Angle(Vector3.back, direction);
-        }
     }
 
-    void Move(Rigidbody rb, Vector3 direction, bool isGrounded, bool jump, ref bool jumped, bool grabRope, ref bool climing, ref int ropeIndex)
+    void Move(Rigidbody rb, Vector3 direction, bool isGrounded, bool jump, ref bool jumped, bool ancord, ref bool climing, ref int ropeIndex)
     {
         Vector3 vel = rb.velocity;
 
         if (isGrounded)
         {
-           
-
-
             if (direction.magnitude > 0.1f)
             {
-
                 Rotate(direction, rb);
-
-                float acceleration = maxSpeed * friction;
-                vel.x -= friction     * Time.deltaTime * vel.x;
-                vel.x += acceleration * Time.deltaTime * direction.x;
-                vel.y -= friction     * Time.deltaTime * vel.y;
-                vel.y += acceleration * Time.deltaTime * direction.y;
-                vel.z -= friction     * Time.deltaTime * vel.z;
-                vel.z += acceleration * Time.deltaTime * direction.z;
+                if (!ancord)
+                {
+                    float acceleration = maxSpeed * friction;
+                    vel.x -= friction * Time.deltaTime * vel.x;
+                    vel.x += acceleration * Time.deltaTime * direction.x;
+                    vel.y -= friction * Time.deltaTime * vel.y;
+                    vel.y += acceleration * Time.deltaTime * direction.y;
+                    vel.z -= friction * Time.deltaTime * vel.z;
+                    vel.z += acceleration * Time.deltaTime * direction.z;
+                }
             }
-
-
-            Climing(rb, grabRope, ref climing, ref ropeIndex);
-
-
-            if (!jumped && jump)
+            if (!ancord)
             {
-                vel += jumpVelocity;
-                jumped = true;
+                if (!jumped && jump)
+                {
+                    vel += jumpVelocity;
+                    jumped = true;
+                }
+                else if (isGrounded)
+                    jumped = false;
             }
-            else if (isGrounded)
-                jumped = false;
         }
         else
         {
@@ -254,102 +275,103 @@ public class PlayerMovment_test : MonoBehaviour
 
         rb.velocity = vel;
 
+     
 
     }
     public bool temp = false;
 
-    private void Climing(Rigidbody rb, bool grabRope, ref bool climing,ref int ropeIndex)
-    {
-        //if (!climing)
-        //{
-        //    //gets closest rope partikle
-        //    if (grabRope)
-        //    {
-        //        ropeIndex = getClosesParticle(rb);
-        //        climing = true;
+    //private void Climing(Rigidbody rb, bool grabRope, ref bool climing,ref int ropeIndex)
+    //{
+    //    //if (!climing)
+    //    //{
+    //    //    //gets closest rope partikle
+    //    //    if (grabRope)
+    //    //    {
+    //    //        ropeIndex = getClosesParticle(rb);
+    //    //        climing = true;
 
-        //    }
+    //    //    }
 
-        //}
-        //else
-        //{
-        //    //dragsRope to you
-        //    if ((grabRope))
-        //        //  ropeIndex = (ropeIndex + 1 < rope.activeParticleCount) ? ropeIndex + 1 : 0;
-        //        ropeIndex = (ropeIndex - 1 != -1) ? ropeIndex - 1 : 0;
-        //    int i = rope.solverIndices[ropeIndex];
-        //    rb.transform.position = rope.GetParticlePosition(ropeIndex);
-        //}
-
-
-
-        IEnumerator drag =  dragRope(rb, grabRope);
-        if (grabRope)
-        {
+    //    //}
+    //    //else
+    //    //{
+    //    //    //dragsRope to you
+    //    //    if ((grabRope))
+    //    //        //  ropeIndex = (ropeIndex + 1 < rope.activeParticleCount) ? ropeIndex + 1 : 0;
+    //    //        ropeIndex = (ropeIndex - 1 != -1) ? ropeIndex - 1 : 0;
+    //    //    int i = rope.solverIndices[ropeIndex];
+    //    //    rb.transform.position = rope.GetParticlePosition(ropeIndex);
+    //    //}
 
 
-            StartCoroutine(drag);
+
+    //    //IEnumerator drag =  dragRope(rb, grabRope);
+    //    //if (grabRope)
+    //    //{
 
 
-        }
+    //    //    StartCoroutine(drag);
+
+
+    //    //}
     
 
-    }
+    //}
 
-    private IEnumerator dragRope(Rigidbody rb, bool grabRope)
-    {
-       int ropeIndex = getClosesParticle(rb);
+    //private IEnumerator dragRope(Rigidbody rb, bool grabRope)
+    //{
+    //   int ropeIndex = getClosesParticle(rb);
 
-        bool direction = (ropeIndex < (int)rope.activeParticleCount * 0.5f);
-        int dir = (direction) ? 1 : -1;
-
-
-        while (grabRope)
-        {
-            grabRope = Input.GetKey(player_1_Input.grab);
-            rb.MovePosition(rope.GetParticlePosition(ropeIndex));
-            rb.transform.position = Vector3.MoveTowards(rb.transform.position, rope.GetParticlePosition(ropeIndex), Time.deltaTime * climeSpeed);
-           // rb.transform.position =  rope.GetParticlePosition(ropeIndex);
-            Debug.Log("here");
-            Debug.DrawLine(transform.position, rope.GetParticlePosition(ropeIndex), Color.white);
-            yield return rb.position == rope.GetParticlePosition(ropeIndex);
-            WaitForSeconds pauseTime = new WaitForSeconds(2.0f);
-            yield return pauseTime;
-
-            ropeIndex = Mathf.Clamp(ropeIndex + dir, 0, rope.activeParticleCount);
+    //    bool direction = (ropeIndex < (int)rope.activeParticleCount * 0.5f);
+    //    int dir = (direction) ? 1 : -1;
 
 
-        }
+    //    while (grabRope)
+    //    {
+    //        grabRope = Input.GetKey(player_1_Input.grab);
+    //        rb.MovePosition(rope.GetParticlePosition(ropeIndex));
+    //        rb.transform.position = Vector3.MoveTowards(rb.transform.position, rope.GetParticlePosition(ropeIndex), Time.deltaTime * climeSpeed);
+    //       // rb.transform.position =  rope.GetParticlePosition(ropeIndex);
+    //        Debug.Log("here");
+    //        Debug.DrawLine(transform.position, rope.GetParticlePosition(ropeIndex), Color.white);
+    //        yield return rb.position == rope.GetParticlePosition(ropeIndex);
+    //        WaitForSeconds pauseTime = new WaitForSeconds(2.0f);
+    //        yield return pauseTime;
+
+    //        ropeIndex = Mathf.Clamp(ropeIndex + dir, 0, rope.activeParticleCount);
+
+
+    //    }
 
 
 
 
-    }
+    //}
 
 
  
-    private int getClosesParticle(Rigidbody rb)
-    {
-        float dist           = float.MaxValue;
-        int returnIndex      = -1;
-        Transform transfrome = rb.transform;
-        for(int i = 0; i < rope.solverIndices.Length; ++i)
-        {
-            int solverIndex = rope.solverIndices[i];
-            float disttmep = Vector3.Distance(transfrome.position, rope.solver.positions[solverIndex]);
+    //private int getClosesParticle(Rigidbody rb)
+    //{
+    //    float dist           = float.MaxValue;
+    //    int returnIndex      = -1;
+    //    Transform transfrome = rb.transform;
+    //    for(int i = 0; i < rope.solverIndices.Length; ++i)
+    //    {
+    //        int solverIndex = rope.solverIndices[i];
+    //        float disttmep = Vector3.Distance(transfrome.position, rope.solver.positions[solverIndex]);
            
-          //  Debug.Log(transfrome.position +"[      ]"+rope.transform.worldToLocalMatrix*rope.solver.positions[solverIndex]);
-            Debug.DrawLine(transfrome.position,rope.GetParticlePosition(solverIndex), Color.blue);
-            if (dist > disttmep+2)
-            {
-                dist        = disttmep;
-                returnIndex = solverIndex;
-            }
-        }
-        if(returnIndex != -1)
-            Debug.DrawLine(transfrome.position, rope.GetParticlePosition(returnIndex), Color.red);
-        return returnIndex;
-    }
+    //      //  Debug.Log(transfrome.position +"[      ]"+rope.transform.worldToLocalMatrix*rope.solver.positions[solverIndex]);
+    //        Debug.DrawLine(transfrome.position,rope.GetParticlePosition(solverIndex), Color.blue);
+    //        if (dist > disttmep+2)
+    //        {
+    //            dist        = disttmep;
+    //            returnIndex = solverIndex;
+    //        }
+    //    }
+    //    if(returnIndex != -1)
+    //        Debug.DrawLine(transfrome.position, rope.GetParticlePosition(returnIndex), Color.red);
+    //    return returnIndex;
+    //}
 
     void Rotate(Vector3 direction, Rigidbody player)
     {
