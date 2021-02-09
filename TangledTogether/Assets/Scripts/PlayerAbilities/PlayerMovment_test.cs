@@ -104,7 +104,7 @@ public class PlayerMovment_test : MonoBehaviour
     private void FixedUpdate()
     {
 
-            Move(    player_2, 
+            MoveForce(    player_2, 
                      player_2_direction, 
                      player_2_isGrounded, 
                      player_2_jump, 
@@ -113,7 +113,7 @@ public class PlayerMovment_test : MonoBehaviour
                  ref player_2_windeRope,
                  ref player_2_ropeIndex);
 
-            Move(    player_1, 
+        MoveForce(    player_1, 
                      player_1_direction,
                      player_1_isGrounded, 
                      player_1_jump, 
@@ -177,30 +177,56 @@ public class PlayerMovment_test : MonoBehaviour
         player_2_ancord = Input.GetKey(player_2_Input.anchor);
 
         player_1.mass = (player_1_isGrounded) ? player_1_startMass : aireWeight;
-        player_1.mass = (player_1_ancord)     ? anchorWeight       : player_1.mass;
-
+        //player_1.mass = (player_1_ancord)     ? anchorWeight       : player_1.mass;
+        if (player_1_ancord)
+        {
+            player_1.mass =anchorWeight;
+            if (player_1_direction.magnitude > 0.1f)
+            {
+                player_1.mass *= 0.5f;
+            }
+        }
 
         player_2.mass = (player_2_isGrounded) ? player_2_startMass : aireWeight;
-        player_2.mass = (player_2_ancord)     ? anchorWeight       : player_2.mass;
+       // player_2.mass = (player_2_ancord)     ? anchorWeight       : player_2.mass;
+
+        if (player_2_ancord)
+        {
+            player_2.mass = anchorWeight;
+            if (player_2_direction.magnitude > 0.1f)
+            {
+                player_2.mass *= 0.5f;
+            }
+        }
+
     }
 
-
+    private int test;
     private void windRope(ObiRope rope, ObiRopeCursor coursor, bool windRope, bool releseRop)
     {
+
+
+
         //haling rope
-        if (windRope)
+        if (windRope )
         {
             climbeCursor.ChangeLength(Mathf.Clamp(climbeRope.restLength - climeSpeed * Time.deltaTime, minRestLenght, maxRestLenght));
             coursor.ChangeLength(Mathf.Clamp(rope.restLength + climeSpeed * Time.deltaTime, minRestLenght, maxRestLenght));
         }
+        //else
+        //{
+        //    climbeCursor.ChangeLength(maxRestLenght);
+        //    coursor.ChangeLength(minRestLenght);
+        //}
         if (releseRop)
         {
             climbeCursor.ChangeLength(Mathf.Clamp(climbeRope.restLength + climeSpeed * Time.deltaTime, minRestLenght, maxRestLenght));
             coursor.ChangeLength(Mathf.Clamp(rope.restLength - climeSpeed * Time.deltaTime, minRestLenght, maxRestLenght));
+
         }
     }
 
-
+ 
 
     void GroundCheck(out bool isGrounded, ref Vector3 direction, Transform groundCheck)
     {
@@ -228,8 +254,8 @@ public class PlayerMovment_test : MonoBehaviour
             if (direction.magnitude > 0.1f)
             {
                 Rotate(direction, rb);
-                if (!ancord)
-                {
+                //if (!ancord)
+                //{
                     float acceleration = maxSpeed * friction;
                     vel.x -= friction * Time.deltaTime * vel.x;
                     vel.x += acceleration * Time.deltaTime * direction.x;
@@ -237,7 +263,7 @@ public class PlayerMovment_test : MonoBehaviour
                     vel.y += acceleration * Time.deltaTime * direction.y;
                     vel.z -= friction * Time.deltaTime * vel.z;
                     vel.z += acceleration * Time.deltaTime * direction.z;
-                }
+                //}
             }
             if (!ancord)
             {
@@ -278,6 +304,79 @@ public class PlayerMovment_test : MonoBehaviour
      
 
     }
+
+
+
+
+    void MoveForce(Rigidbody rb, Vector3 direction, bool isGrounded, bool jump, ref bool jumped, bool ancord, ref bool climing, ref int ropeIndex)
+    {
+
+
+
+   
+        if (direction.magnitude > 0.1f)
+        {
+            Vector3 vel = rb.velocity;
+
+            Rotate(direction, rb);
+
+            Vector3 targetVelocity = maxSpeed * direction;
+
+            Vector3 velocityChange = (targetVelocity-vel);
+
+            vel.x = Mathf.Clamp(velocityChange.x, -maxSpeed, maxSpeed);
+            vel.y = Mathf.Clamp(velocityChange.y, -maxSpeed, maxSpeed);
+            vel.z = Mathf.Clamp(velocityChange.z, -maxSpeed, maxSpeed);
+
+            //vel.x = maxSpeed * Time.deltaTime * direction.x;
+            //vel.y = maxSpeed * Time.deltaTime * direction.y;
+            //vel.z = maxSpeed * Time.deltaTime * direction.z;
+
+
+            rb.AddForce(vel, ForceMode.VelocityChange);
+
+            //if (!ancord)
+            //{
+            //    if (!jumped && jump)
+            //    {
+            //        rb.AddForce(jumpVelocity, ForceMode.Impulse); 
+            //        jumped = true;
+            //    }
+            //    else if (isGrounded)
+            //        jumped = false;
+            //}
+
+        }
+        //if (isGrounded)
+        //{
+        //    if (direction.magnitude > 0.1f)
+        //    {
+        //        Rotate(direction, rb);
+
+        //        //vel.x =  maxSpeed * Time.deltaTime * direction.x;
+        //        //vel.y =  maxSpeed * Time.deltaTime * direction.y;
+        //        //vel.z =  maxSpeed * Time.deltaTime * direction.z;
+        //        float acceleration = maxSpeed * friction;
+        //        vel.x -= friction * Time.deltaTime * vel.x;
+        //        vel.x += acceleration * Time.deltaTime * direction.x;
+        //        vel.y -= friction * Time.deltaTime * vel.y;
+        //        vel.y += acceleration * Time.deltaTime * direction.y;
+        //        vel.z -= friction * Time.deltaTime * vel.z;
+        //        vel.z += acceleration * Time.deltaTime * direction.z;
+
+        //        rb.AddForce(vel, ForceMode.VelocityChange);
+
+        //    }
+
+        //}
+    }
+
+
+
+
+
+
+
     public bool temp = false;
 
     //private void Climing(Rigidbody rb, bool grabRope, ref bool climing,ref int ropeIndex)
